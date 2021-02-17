@@ -2,8 +2,7 @@ package me.ericjiang.boardgamelib.tictactoe
 
 import me.ericjiang.boardgamelib.ai.CachedAlphaBetaAgent
 
-class TicTacToeAgent(player: Player) extends CachedAlphaBetaAgent[TicTacToeState, TicTacToeGame](
-  game = new TicTacToeGame,
+class TicTacToeAgent(player: Player) extends CachedAlphaBetaAgent[TicTacToeState](
   depth = 10,
   heuristic = (state: TicTacToeState) =>
     state.winner match {

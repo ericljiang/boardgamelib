@@ -1,26 +1,15 @@
 package me.ericjiang.boardgamelib.tictactoe
 
-import me.ericjiang.boardgamelib.ScalaUtils.emptyMultiMap
-import me.ericjiang.boardgamelib.{Action, Game, State, tictactoe}
-import shapeless.HMap
-
-import scala.collection.mutable
+import me.ericjiang.boardgamelib.{Action, Game, State}
 
 class TicTacToeGame extends Game[TicTacToeState] {
 
   override def initialState: TicTacToeState = TicTacToeState(
     activePlayer = X,
     board = Vector.fill[Option[Player]](3, 3)(None))
-
-  override def initialAvailableActions: mutable.MultiMap[Class[_ <: Action], Action] =
-    initialState.availableActions
-
-  override protected def rules: HMap[RuleRelation] = HMap[RuleRelation](
-    classOf[MarkAction] -> MarkRule
-  )
 }
 
-case class TicTacToeState(activePlayer: Player, board: Vector[Vector[Option[Player]]], winner: Option[Player] = None) extends State {
+case class TicTacToeState(activePlayer: Player, board: Vector[Vector[Option[Player]]], winner: Option[Player] = None) extends State[TicTacToeState] {
   def renderBoard: String = board
     .map(row => row
       .map {
@@ -31,15 +20,13 @@ case class TicTacToeState(activePlayer: Player, board: Vector[Vector[Option[Play
     .map(r => s" $r ")
     .mkString("\n---|---|---\n")
 
-  def availableActions: mutable.MultiMap[Class[_ <: Action], Action] =
+  override def availableActions: Set[Action[TicTacToeState]] =
     if (winner.isDefined) {
-      emptyMultiMap[Class[_ <: Action], Action]
+      Set.empty
     } else {
       emptySpaces
-        .map { case (r, c) => tictactoe.MarkAction(activePlayer, r, c) }
-        .foldLeft(emptyMultiMap[Class[_ <: Action], Action]) {
-          (map, action) => map.addBinding(classOf[MarkAction], action)
-        }
+        .map { case (r, c) => MarkAction(activePlayer, r, c) }
+        .toSet
     }
 
   def emptySpaces: Iterable[(Int, Int)] =

@@ -1,11 +1,9 @@
 package me.ericjiang.boardgamelib.tictactoe
 
-import me.ericjiang.boardgamelib
-import me.ericjiang.boardgamelib.{Action, ActionResult, Event, Rule}
+import me.ericjiang.boardgamelib.{Action, ActionResult, Event}
 
-object MarkRule extends Rule[MarkAction, TicTacToeState] {
-  override def apply(action: MarkAction, state: TicTacToeState): ActionResult[TicTacToeState] = {
-    val (player, row, col) = (action.player, action.row, action.col)
+case class MarkAction(player: Player, row: Int, col: Int) extends Action[TicTacToeState] {
+  override def apply(state: TicTacToeState): ActionResult[TicTacToeState] = {
     require(state.activePlayer == player)
     require(0 <= row && row < 3)
     require(0 <= col && col < 3)
@@ -14,9 +12,9 @@ object MarkRule extends Rule[MarkAction, TicTacToeState] {
     val newBoard = state.board.updated(row, newRow)
     val winner = if (
       newRow.forall(_.contains(state.activePlayer)) ||
-      newBoard.map(r => r(col)).forall(_.contains(state.activePlayer)) ||
-      (for (r <- 0 to 2; c <- 0 to 2 if r == c) yield newBoard(r)(c)).forall(_.contains(state.activePlayer)) ||
-      (for (r <- 0 to 2; c <- 0 to 2 if r + c == 2) yield newBoard(r)(c)).forall(_.contains(state.activePlayer))
+        newBoard.map(r => r(col)).forall(_.contains(state.activePlayer)) ||
+        (for (r <- 0 to 2; c <- 0 to 2 if r == c) yield newBoard(r)(c)).forall(_.contains(state.activePlayer)) ||
+        (for (r <- 0 to 2; c <- 0 to 2 if r + c == 2) yield newBoard(r)(c)).forall(_.contains(state.activePlayer))
     ) {
       Some(state.activePlayer)
     } else {
@@ -27,13 +25,11 @@ object MarkRule extends Rule[MarkAction, TicTacToeState] {
       case O => X
     }
     val newState = TicTacToeState(newActivePlayer, newBoard, winner)
-    boardgamelib.ActionResult(
+    ActionResult(
       state = TicTacToeState(newActivePlayer, newBoard, winner),
       events = Seq(MarkEvent(player, row, col)),
       availableActions = newState.availableActions
     )
   }
 }
-
-case class MarkAction(player: Player, row: Int, col: Int) extends Action
 case class MarkEvent(player: Player, row: Int, col: Int) extends Event

@@ -1,33 +1,20 @@
 package me.ericjiang.boardgamelib
 
-import shapeless.HMap
+import scala.util.Try
 
-import scala.collection.mutable
-
-trait Game[S <: State] {
-
-  protected class RuleRelation[K, V]
-
-  protected implicit def allowed[A <: Action, R <: Rule[A, S]]: RuleRelation[Class[A], R] =
-    new RuleRelation[Class[A], R]
-
-  protected def rules: HMap[RuleRelation]
-
+trait Game[S <: State[S]] {
   def initialState: S
-
-  def initialAvailableActions: mutable.MultiMap[Class[_ <: Action], Action]
-
-  def submitAction(actionClass: Class[_ <: Action], action: Action, state: S): ActionResult[S] = {
-    val rule: Rule[Action, S] = rules // compiler infers V as Nothing
-      .get(actionClass)
-      .getOrElse(throw new IllegalArgumentException)
-    rule(action, state)
-  }
 }
 
-trait Action
-trait State
+trait State[T <: State[T]] {
+  def availableActions: Set[Action[T]]
+}
+
+trait Action[S <: State[S]] {
+  def apply(state: S): ActionResult[S]
+  def validate(state: S): Boolean = Try(apply(state)).isSuccess
+}
+
+case class ActionResult[S <: State[S]](state: S, events: Seq[Event], availableActions: Set[Action[S]])
+
 trait Event
-trait Rule[A <: Action, S <: State] {
-  def apply(action: A, state: S): ActionResult[S]
-}

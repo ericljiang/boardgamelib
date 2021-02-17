@@ -10,7 +10,7 @@ object Demo extends App {
   val agentO = new TicTacToeAgent(O)
 
   var state = game.initialState
-  var availableActions = game.initialAvailableActions
+  var availableActions = state.availableActions
   val events = ListBuffer.empty[Event]
 
   val start = System.nanoTime
@@ -20,8 +20,8 @@ object Demo extends App {
       case X => agentX
       case O => agentO
     }
-    val (actionClass, action) = agent.chooseAction(availableActions, state)
-    val result = game.submitAction(actionClass, action, state)
+    val action = agent.chooseAction(availableActions, state)
+    val result = action(state)
     state = result.state
     availableActions = result.availableActions
     events ++= result.events

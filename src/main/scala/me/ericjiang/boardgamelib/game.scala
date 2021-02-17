@@ -6,8 +6,8 @@ trait Game[S <: State[S]] {
   def initialState: S
 }
 
-trait State[T <: State[T]] {
-  def availableActions: Set[Action[T]]
+trait State[S <: State[S]] {
+  def availableActions: Set[Action[S]]
 }
 
 trait Action[S <: State[S]] {

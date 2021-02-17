@@ -3,7 +3,6 @@ package me.ericjiang.boardgamelib.tictactoe
 import me.ericjiang.boardgamelib.{Action, Game, State}
 
 class TicTacToeGame extends Game[TicTacToeState] {
-
   override def initialState: TicTacToeState = TicTacToeState(
     activePlayer = X,
     board = Vector.fill[Option[Player]](3, 3)(None))

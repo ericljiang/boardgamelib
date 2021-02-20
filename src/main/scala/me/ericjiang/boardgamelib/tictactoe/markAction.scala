@@ -3,7 +3,7 @@ package me.ericjiang.boardgamelib.tictactoe
 import me.ericjiang.boardgamelib.{Action, ActionResult, Event}
 
 case class MarkAction(player: Player, row: Int, col: Int) extends Action[TicTacToeState] {
-  override def apply(state: TicTacToeState): ActionResult[TicTacToeState] = {
+  override def execute(state: TicTacToeState): ActionResult[TicTacToeState] = {
     require(state.activePlayer == player)
     require(0 <= row && row < 3)
     require(0 <= col && col < 3)

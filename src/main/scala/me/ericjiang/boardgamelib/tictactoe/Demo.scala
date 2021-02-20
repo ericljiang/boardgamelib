@@ -1,6 +1,6 @@
-package me.ericjiang.boardgamelib
+package me.ericjiang.boardgamelib.tictactoe
 
-import me.ericjiang.boardgamelib.tictactoe.{O, TicTacToeAgent, TicTacToeGame, X}
+import me.ericjiang.boardgamelib.Event
 
 import scala.collection.mutable.ListBuffer
 
@@ -21,7 +21,7 @@ object Demo extends App {
       case O => agentO
     }
     val action = agent.chooseAction(availableActions, state)
-    val result = action(state)
+    val result = action.execute(state)
     state = result.state
     availableActions = result.availableActions
     events ++= result.events

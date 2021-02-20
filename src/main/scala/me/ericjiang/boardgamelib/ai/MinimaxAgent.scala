@@ -19,7 +19,7 @@ class MinimaxAgent[S <: State[S]](depth: Int, heuristic: S => Double) extends Ag
       .maxBy(minimax(_, state, depth - 1, maximizingPlayer = false))
 
   private def minimax(action: Action[S], state: S, depth: Int, maximizingPlayer: Boolean): Double = {
-    val result = action(state)
+    val result = action.execute(state)
     val availableActions = result.availableActions
     //      .filter(_.validate(result.state))
     val value = if (depth == 0 || availableActions.isEmpty) {

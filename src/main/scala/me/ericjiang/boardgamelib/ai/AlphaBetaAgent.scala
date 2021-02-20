@@ -14,7 +14,7 @@ class AlphaBetaAgent[S <: State[S]](depth: Int, heuristic: S => Double) extends 
       .maxBy(alphaBeta(_, state, depth - 1, −∞, ∞, maximizingPlayer = false))
 
   protected def alphaBeta(action: Action[S], state: S, depth: Int, α: Double, β: Double, maximizingPlayer: Boolean): Double = {
-    val result = action(state)
+    val result = action.execute(state)
     val availableActions = result.availableActions
     //      .filter(_.validate(result.state))
     if (depth == 0 || availableActions.isEmpty) {

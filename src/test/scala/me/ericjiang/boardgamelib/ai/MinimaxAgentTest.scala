@@ -22,9 +22,9 @@ class MinimaxAgentTest extends AnyFlatSpec with EasyMockSugar {
     val worstState = mock[TestState]
 
     expecting {
-      bestAction(state)
+      bestAction.execute(state)
         .andReturn(ActionResult(state = bestState, events = null, availableActions = Set.empty))
-      worstAction(state)
+      worstAction.execute(state)
         .andReturn(ActionResult(state = worstState, events = null, availableActions = Set.empty))
       heuristic(bestState)
         .andReturn(1)
@@ -49,9 +49,9 @@ class MinimaxAgentTest extends AnyFlatSpec with EasyMockSugar {
     val subsequentAction =  mock[Action[TestState]]
 
     expecting {
-      bestAction(state)
+      bestAction.execute(state)
         .andReturn(ActionResult(bestState, null, Set(subsequentAction)))
-      worstAction(state)
+      worstAction.execute(state)
         .andReturn(ActionResult(worstState, null, Set(subsequentAction)))
       heuristic(bestState)
         .andReturn(1)

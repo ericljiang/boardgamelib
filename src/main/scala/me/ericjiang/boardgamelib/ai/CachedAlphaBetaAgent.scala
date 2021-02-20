@@ -4,7 +4,7 @@ import me.ericjiang.boardgamelib.{Action, State}
 
 import scala.collection.mutable
 
-class CachedAlphaBetaAgent[S <: State[S]](depth: Int, heuristic: S => Double)
+class CachedAlphaBetaAgent[S <: State[S]](depth: Int, val heuristic: S => Double)
   extends AlphaBetaAgent[S](depth, heuristic) {
 
   val cache: mutable.Map[(Action[S], S, Int, Double, Double, Boolean), Double] = mutable.Map.empty

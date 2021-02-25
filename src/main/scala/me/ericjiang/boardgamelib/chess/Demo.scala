@@ -1,18 +1,18 @@
 package me.ericjiang.boardgamelib.chess
 
-import me.ericjiang.boardgamelib.Event
+import me.ericjiang.boardgamelib.{Action, Event}
 
 import scala.collection.mutable.ListBuffer
 
 object Demo extends App {
   println("chess")
-  val game = new ChessGame
-  val agentWhite = new ChessAgent(White, 4)
-  val agentBlack = new ChessAgent(Black, 1)
+  val agentWhite = new ChessAgent(White, 3)
+  val agentBlack = new ChessAgent(Black, 2)
 
-  var state = game.initialState
+  var state = ChessGame.initialState
   var availableActions = state.availableActions
   val events = ListBuffer.empty[Event]
+  val actions = ListBuffer.empty[Action[ChessState]]
 
   while (availableActions.nonEmpty) {
     val agent = state.activePlayer match {
@@ -20,16 +20,20 @@ object Demo extends App {
       case Black => agentBlack
     }
     val start = System.nanoTime
-    val action = agent.chooseAction(availableActions, state)
+    val action = agent.chooseAction(state)
     val end = System.nanoTime
     val time = (end - start) / 1e9d
     val result = action.execute(state)
     state = result.state
-    availableActions = result.availableActions
     events ++= result.events
+    actions += action
+    availableActions = result.availableActions
+
     println(s"$action (${time}s)")
-    println(agent.heuristic(state))
+    println(agent.cacheHits)
+//    println(agent.heuristic(state))
     println(state)
 //    println
   }
+  println(actions.mkString(" "))
 }

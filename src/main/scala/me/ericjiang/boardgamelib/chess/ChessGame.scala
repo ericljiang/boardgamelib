@@ -3,9 +3,10 @@ package me.ericjiang.boardgamelib.chess
 import me.ericjiang.boardgamelib.chess.ChessFiles._
 import me.ericjiang.boardgamelib.{Action, Game, State}
 
+import scala.collection.mutable
 import scala.io.AnsiColor._
 
-class ChessGame extends Game[ChessState] {
+object ChessGame extends Game[ChessState] {
   override def initialState: ChessState = ChessState(
     activePlayer = White,
     board = Seq(White, Black).flatMap(generatePieces).toMap,
@@ -34,24 +35,27 @@ case class ChessState(
   winner: Option[Player])
   extends State[ChessState] {
   override def availableActions: Set[Action[ChessState]] = {
-    if (winner.isDefined) {
-      Set.empty
-    } else {
-      board
-        .filter { case (_, piece) => piece.player == activePlayer }
-        .flatMap { case (position, piece) => piece.moves(position, this) }
-        // in bounds
-        .filter { case MovePieceAction(_, _, (file, rank)) =>
-          a <= file && file <= h &&
-            1 <= rank && rank <= 8
-        }
-        // moves into empty space or opponent piece
-        .filter { case MovePieceAction(_, _, destination) =>
-          board.get(destination).forall(_.player != activePlayer)
-        }
-        // TODO does not result in check for moving player
-        .toSet
+    if (!ChessState.moveCache.contains(this)) {
+      ChessState.moveCache(this) = if (winner.isDefined) {
+        Set.empty
+      } else {
+        board
+          .filter { case (_, piece) => piece.player == activePlayer }
+          .flatMap { case (position, piece) => piece.moves(position, this) }
+          // in bounds
+          .filter { case MovePieceAction(_, _, (file, rank)) =>
+            a <= file && file <= h &&
+              1 <= rank && rank <= 8
+          }
+          // moves into empty space or opponent piece
+          .filter { case MovePieceAction(_, _, destination) =>
+            board.get(destination).forall(_.player != activePlayer)
+          }
+          // TODO does not result in check for moving player
+          .toSet
+      }
     }
+    ChessState.moveCache(this)
   }
 
   override def toString: String = {
@@ -100,6 +104,10 @@ case class ChessState(
     }
     s"$renderedBoard$RESET\n$player to move."
   }
+}
+
+object ChessState {
+  private val moveCache: mutable.Map[ChessState, Set[Action[ChessState]]] = mutable.Map.empty
 }
 
 sealed trait Player

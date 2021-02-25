@@ -6,8 +6,6 @@ class ChessAgent(player: Player, depth: Int) extends CachedAlphaBetaAgent[ChessS
   depth = depth,
   heuristic = state => {
     state.winner match {
-      case Some(p) if p == player => 1000
-      case Some(p) if p != player => 1000
       case None => state.board.values.map { piece => {
         val value = piece match {
           case Pawn(_) => 1
@@ -19,5 +17,7 @@ class ChessAgent(player: Player, depth: Int) extends CachedAlphaBetaAgent[ChessS
         }
         (if (piece.player == player) 1 else -1) * value
       }}.sum
+      case Some(p) if p == player => 1000
+      case Some(p) if p != player => -1000
     }
   })

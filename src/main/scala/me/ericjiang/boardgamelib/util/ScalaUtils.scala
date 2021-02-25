@@ -1,4 +1,4 @@
-package me.ericjiang.boardgamelib
+package me.ericjiang.boardgamelib.util
 
 import scala.collection.mutable
 

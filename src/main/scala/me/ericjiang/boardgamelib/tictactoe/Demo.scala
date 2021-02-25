@@ -20,7 +20,7 @@ object Demo extends App {
       case X => agentX
       case O => agentO
     }
-    val action = agent.chooseAction(availableActions, state)
+    val action = agent.chooseAction(state)
     val result = action.execute(state)
     state = result.state
     availableActions = result.availableActions

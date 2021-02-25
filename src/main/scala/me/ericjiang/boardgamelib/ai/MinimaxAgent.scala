@@ -13,24 +13,23 @@ class MinimaxAgent[S <: State[S]](depth: Int, heuristic: S => Double) extends Ag
 
   require(depth > 0)
 
-  def chooseAction(availableActions: Set[Action[S]], state: S): Action[S] =
-    availableActions
+  def chooseAction(state: S): Action[S] =
+    state.availableActions
 //      .filter(_.validate(state))
-      .maxBy(minimax(_, state, depth - 1, maximizingPlayer = false))
+      .maxBy(action => minimax(action.execute(state).state, depth - 1, maximizingPlayer = false))
 
-  private def minimax(action: Action[S], state: S, depth: Int, maximizingPlayer: Boolean): Double = {
-    val result = action.execute(state)
-    val availableActions = result.availableActions
+  private def minimax(state: S, depth: Int, maximizingPlayer: Boolean): Double = {
+    val availableActions = state.availableActions
     //      .filter(_.validate(result.state))
     val value = if (depth == 0 || availableActions.isEmpty) {
-      heuristic(result.state)
+      heuristic(state)
     } else if (maximizingPlayer) {
       availableActions
-        .map(minimax(_, result.state, depth - 1, maximizingPlayer = false))
+        .map(action => minimax(action.execute(state).state, depth - 1, maximizingPlayer = false))
         .max
     } else {
       availableActions
-        .map(minimax(_, result.state, depth - 1, maximizingPlayer = true))
+        .map(action => minimax(action.execute(state).state, depth - 1, maximizingPlayer = true))
         .min
     }
     value

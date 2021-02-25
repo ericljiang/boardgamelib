@@ -72,6 +72,7 @@ case class Pawn(player: Player) extends Piece {
       None
     }
     // TODO en passant
+    // TODO promotion
     attackingMoves ++ forwardMove ++ doubleAdvanceMove
   }
 }

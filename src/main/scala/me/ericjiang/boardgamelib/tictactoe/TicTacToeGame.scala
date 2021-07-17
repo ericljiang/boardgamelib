@@ -19,13 +19,13 @@ case class TicTacToeState(activePlayer: Player, board: Vector[Vector[Option[Play
     .map(r => s" $r ")
     .mkString("\n---|---|---\n")
 
-  override def availableActions: Set[Action[TicTacToeState]] =
+  override def availableActions: Seq[Action[TicTacToeState]] =
     if (winner.isDefined) {
-      Set.empty
+      Seq.empty
     } else {
       emptySpaces
         .map { case (r, c) => MarkAction(activePlayer, r, c) }
-        .toSet
+        .toSeq
     }
 
   def emptySpaces: Iterable[(Int, Int)] =

@@ -21,15 +21,15 @@ class MinimaxAgentTest extends BaseTest {
 
     expecting {
       state.availableActions
-        .andReturn(Set(bestAction, worstAction))
+        .andReturn(Seq(bestAction, worstAction))
       bestAction.execute(state)
-        .andReturn(ActionResult(state = bestState, events = null, availableActions = Set.empty))
+        .andReturn(ActionResult(state = bestState, events = null, availableActions = Seq.empty))
       worstAction.execute(state)
-        .andReturn(ActionResult(state = worstState, events = null, availableActions = Set.empty))
+        .andReturn(ActionResult(state = worstState, events = null, availableActions = Seq.empty))
       bestState.availableActions
-        .andReturn(Set.empty)
+        .andReturn(Seq.empty)
       worstState.availableActions
-        .andReturn(Set.empty)
+        .andReturn(Seq.empty)
       heuristic(bestState)
         .andReturn(1)
       heuristic(worstState)
@@ -54,11 +54,11 @@ class MinimaxAgentTest extends BaseTest {
 
     expecting {
       state.availableActions
-        .andReturn(Set(bestAction, worstAction))
+        .andReturn(Seq(bestAction, worstAction))
       bestAction.execute(state)
-        .andReturn(ActionResult(bestState, null, Set(subsequentAction)))
+        .andReturn(ActionResult(bestState, null, Seq(subsequentAction)))
       worstAction.execute(state)
-        .andReturn(ActionResult(worstState, null, Set(subsequentAction)))
+        .andReturn(ActionResult(worstState, null, Seq(subsequentAction)))
       heuristic(bestState)
         .andReturn(1)
       heuristic(worstState)

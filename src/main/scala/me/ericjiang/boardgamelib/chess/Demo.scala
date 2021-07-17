@@ -6,8 +6,8 @@ import scala.collection.mutable.ListBuffer
 
 object Demo extends App {
   println("chess")
-  val agentWhite = new ChessAgent(White, 3)
-  val agentBlack = new ChessAgent(Black, 2)
+  val agentWhite = new ChessAgent(White, 4)
+  val agentBlack = new ChessAgent(Black, 4)
 
   var state = ChessGame.initialState
   var availableActions = state.availableActions
@@ -30,7 +30,8 @@ object Demo extends App {
     availableActions = result.availableActions
 
     println(s"$action (${time}s)")
-    println(agent.cacheHits)
+    println(agent.invocations)
+    println(agent.cacheMisses)
 //    println(agent.heuristic(state))
     println(state)
 //    println

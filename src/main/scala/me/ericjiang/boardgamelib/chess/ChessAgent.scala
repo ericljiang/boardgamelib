@@ -1,10 +1,22 @@
 package me.ericjiang.boardgamelib.chess
 
-import me.ericjiang.boardgamelib.ai.CachedAlphaBetaAgent
+import me.ericjiang.boardgamelib.Action
+import me.ericjiang.boardgamelib.ai.{AlphaBetaAgent, AlphaBetaCaching, MoveOrdering}
 
-class ChessAgent(player: Player, depth: Int) extends CachedAlphaBetaAgent[ChessState](
-  depth = depth,
-  heuristic = state => {
+class ChessAgent(player: Player, depth: Int)
+  extends AlphaBetaAgent[ChessState](depth = depth, heuristic = ChessAgent.heuristic(player, _))
+    with AlphaBetaCaching[ChessState]
+    with MoveOrdering[ChessState] {
+  override def ordering(action: Action[ChessState], state: ChessState, depth: Int): Int = {
+    if (state.board.contains(action.asInstanceOf[MovePieceAction].destination))
+      -2
+    else
+      super.ordering(action, state, depth)
+  }
+}
+
+object ChessAgent {
+  def heuristic(player: Player, state: ChessState): Double = {
     state.winner match {
       case None => state.board.values.map { piece => {
         val value = piece match {
@@ -20,4 +32,5 @@ class ChessAgent(player: Player, depth: Int) extends CachedAlphaBetaAgent[ChessS
       case Some(p) if p == player => 1000
       case Some(p) if p != player => -1000
     }
-  })
+  }
+}

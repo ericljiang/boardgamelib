@@ -34,10 +34,10 @@ case class ChessState(
   board: Map[(Int, Int), Piece],
   winner: Option[Player])
   extends State[ChessState] {
-  override def availableActions: Set[Action[ChessState]] = {
+  override def availableActions: Seq[Action[ChessState]] = {
     if (!ChessState.moveCache.contains(this)) {
       ChessState.moveCache(this) = if (winner.isDefined) {
-        Set.empty
+        Seq.empty
       } else {
         board
           .filter { case (_, piece) => piece.player == activePlayer }
@@ -52,7 +52,7 @@ case class ChessState(
             board.get(destination).forall(_.player != activePlayer)
           }
           // TODO does not result in check for moving player
-          .toSet
+          .toSeq
       }
     }
     ChessState.moveCache(this)
@@ -107,7 +107,7 @@ case class ChessState(
 }
 
 object ChessState {
-  private val moveCache: mutable.Map[ChessState, Set[Action[ChessState]]] = mutable.Map.empty
+  private val moveCache: mutable.Map[ChessState, Seq[Action[ChessState]]] = mutable.Map.empty
 }
 
 sealed trait Player

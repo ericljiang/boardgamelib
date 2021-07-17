@@ -7,7 +7,7 @@ trait Game[S <: State[S]] {
 }
 
 trait State[S <: State[S]] {
-  def availableActions: Set[Action[S]]
+  def availableActions: Seq[Action[S]]
 }
 
 trait Action[S <: State[S]] {
@@ -15,6 +15,6 @@ trait Action[S <: State[S]] {
   def validate(state: S): Boolean = Try(execute(state)).isSuccess
 }
 
-case class ActionResult[S <: State[S]](state: S, events: Seq[Event], availableActions: Set[Action[S]])
+case class ActionResult[S <: State[S]](state: S, events: Seq[Event], availableActions: Seq[Action[S]])
 
 trait Event

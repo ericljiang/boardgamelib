@@ -55,3 +55,21 @@ case class MovePieceAction(piece: Piece, origin: (Int, Int), destination: (Int, 
     s"$pieceName${numberToFile(originFile)}$originRank${numberToFile(destinationFile)}$destinationRank"
   }
 }
+
+object MovePieceAction {
+  def parse(notation: String, player: Player): MovePieceAction = {
+    val pattern = "(?i)([PKQBNR])([a-h])([1-8])([a-h])([1-8])".r
+    val pattern(piece, originFile, originRank, destinationFile, destinationRank) = notation
+    MovePieceAction(
+      piece = piece.toUpperCase match {
+        case "P" => Pawn(player)
+        case "K" => King(player)
+        case "Q" => Queen(player)
+        case "B" => Bishop(player)
+        case "N" => Knight(player)
+        case "R" => Rook(player)
+      },
+      origin = (originFile.toCharArray.head - 'a' + 1, originRank.toInt),
+      destination = (destinationFile.toCharArray.head - 'a' + 1, destinationRank.toInt))
+  }
+}
